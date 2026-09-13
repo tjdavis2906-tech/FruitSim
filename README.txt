@@ -1,4 +1,4 @@
-FruitSim v0.1.0 — Browser Test Chamber
+FruitSim v0.1.1 — Browser Test Chamber
 
 HOW TO RUN ON YOUR CHROMEBOOK
 1. Extract this ZIP.
@@ -22,3 +22,6 @@ are NOT claimed to reproduce biological fruit-fly behavior.
 
 This is deliberately dependency-free so it works by double-clicking index.html.
 A later version can move to true WebGL/Three.js once we have a convenient host.
+
+
+v0.1.1: Mobile HUD now moves to the bottom and can be collapsed with the +/- button.
