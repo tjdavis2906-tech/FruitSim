@@ -1,0 +1,395 @@
+{
+  "version": "0.1.0",
+  "dataset": "male-cns:v1.0",
+  "note": "Small real-connectome-derived circuit. Browser dynamics and sensor/motor mappings are experimental.",
+  "threshold": 0.25,
+  "decay": 0.22,
+  "neurons": [
+    {
+      "id": 12781,
+      "label": "DNge104_R",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 522822,
+      "label": "AN17A076_L",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 513052,
+      "label": "DNg15_R",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 22728,
+      "label": "AN17A004_L",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 800632,
+      "label": "IN09B014_R",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 15148,
+      "label": "DNg62_R",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 12169,
+      "label": "DNg87_L",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 513405,
+      "label": "AN05B040_L",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 18278,
+      "label": "AN05B029_L",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 800373,
+      "label": "IN23B001_L",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 800206,
+      "label": "IN23B001_R",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 800002,
+      "label": "IN07B010_L",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 35505,
+      "label": "AN07B024_L",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 23826,
+      "label": "AN05B005_L",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 12590,
+      "label": "DNg22_L",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 11006,
+      "label": "DNge129_L",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 800485,
+      "label": "IN06B003_L",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 933729,
+      "label": "IN17A023_L",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 27702,
+      "label": "ANXXX013_L",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 800268,
+      "label": "IN01B001_L",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 15653,
+      "label": "DNge012_L",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 14098,
+      "label": "DNge044_L",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 11352,
+      "label": "DNge027_L",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 524363,
+      "label": "GNG031_L",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 934591,
+      "label": "IN07B009_R",
+      "nt": "glutamate",
+      "sign": 0
+    },
+    {
+      "id": 801598,
+      "label": "IN03B019_L",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 801214,
+      "label": "LBL40_R",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 801404,
+      "label": "IN11B002_R",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 802274,
+      "label": "IN09A011_R",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 803745,
+      "label": "IN13B104_L",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 906654,
+      "label": "INXXX133_R",
+      "nt": "acetylcholine",
+      "sign": 1
+    },
+    {
+      "id": 801500,
+      "label": "IN06B020_L",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 904119,
+      "label": "IN06B088_R",
+      "nt": "gaba",
+      "sign": -1
+    },
+    {
+      "id": 801113,
+      "label": "IN07B013_R",
+      "nt": "glutamate",
+      "sign": 0
+    }
+  ],
+  "edges": [
+    [
+      12781,
+      522822,
+      288
+    ],
+    [
+      12781,
+      513052,
+      150
+    ],
+    [
+      12781,
+      22728,
+      66
+    ],
+    [
+      12781,
+      800632,
+      61
+    ],
+    [
+      522822,
+      15148,
+      276
+    ],
+    [
+      522822,
+      12169,
+      158
+    ],
+    [
+      522822,
+      513405,
+      150
+    ],
+    [
+      522822,
+      18278,
+      147
+    ],
+    [
+      513052,
+      800373,
+      289
+    ],
+    [
+      513052,
+      800206,
+      188
+    ],
+    [
+      513052,
+      800002,
+      151
+    ],
+    [
+      513052,
+      35505,
+      97
+    ],
+    [
+      22728,
+      23826,
+      141
+    ],
+    [
+      22728,
+      12590,
+      116
+    ],
+    [
+      22728,
+      11006,
+      106
+    ],
+    [
+      22728,
+      800485,
+      104
+    ],
+    [
+      800632,
+      800002,
+      107
+    ],
+    [
+      800632,
+      933729,
+      103
+    ],
+    [
+      800632,
+      27702,
+      91
+    ],
+    [
+      800632,
+      800268,
+      88
+    ],
+    [
+      15148,
+      15653,
+      206
+    ],
+    [
+      15148,
+      14098,
+      202
+    ],
+    [
+      15148,
+      11352,
+      187
+    ],
+    [
+      15148,
+      524363,
+      185
+    ],
+    [
+      800373,
+      934591,
+      73
+    ],
+    [
+      800373,
+      801598,
+      67
+    ],
+    [
+      800373,
+      801214,
+      65
+    ],
+    [
+      800373,
+      801404,
+      64
+    ],
+    [
+      23826,
+      802274,
+      90
+    ],
+    [
+      23826,
+      803745,
+      82
+    ],
+    [
+      23826,
+      513052,
+      76
+    ],
+    [
+      23826,
+      906654,
+      75
+    ],
+    [
+      800002,
+      801500,
+      92
+    ],
+    [
+      800002,
+      904119,
+      76
+    ],
+    [
+      800002,
+      801113,
+      73
+    ],
+    [
+      800002,
+      801214,
+      70
+    ]
+  ]
+}
