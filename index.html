@@ -3,145 +3,1122 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FruitSim v0.1.0</title>
+<title>FruitSim v0.1.2</title>
+
 <style>
-html,body{margin:0;height:100%;overflow:hidden;background:#090d12;color:#e8f0f7;font-family:system-ui,sans-serif}
-#c{width:100%;height:100%;display:block}
-#hud{position:fixed;left:14px;top:14px;background:#101720dd;border:1px solid #2c3b4c;border-radius:12px;padding:12px 14px;max-width:340px;box-shadow:0 8px 30px #0008}
-h1{font-size:18px;margin:0 0 5px}.muted{color:#91a3b6;font-size:12px}.row{margin-top:7px;font-size:13px}
-#events{font-family:ui-monospace,monospace;font-size:11px;max-height:130px;overflow:hidden;margin-top:8px;color:#b9c7d5}
-button{background:#1b2a38;color:white;border:1px solid #40566c;border-radius:7px;padding:6px 9px;margin:7px 4px 0 0}
+html,body{
+  margin:0;
+  height:100%;
+  overflow:hidden;
+  background:#090d12;
+  color:#e8f0f7;
+  font-family:system-ui,sans-serif
+}
+
+#c{
+  width:100%;
+  height:100%;
+  display:block
+}
+
+#hud{
+  position:fixed;
+  left:14px;
+  top:14px;
+  background:#101720dd;
+  border:1px solid #2c3b4c;
+  border-radius:12px;
+  padding:12px 14px;
+  max-width:340px;
+  box-shadow:0 8px 30px #0008;
+  z-index:5
+}
+
+#hudHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px
+}
+
+#hudHeader h1{
+  font-size:18px;
+  margin:0
+}
+
+#collapse{
+  margin:0;
+  padding:4px 8px;
+  font-size:14px;
+  min-width:34px
+}
+
+.muted{
+  color:#91a3b6;
+  font-size:12px;
+  margin-top:5px
+}
+
+.row{
+  margin-top:7px;
+  font-size:13px
+}
+
+#events{
+  font-family:ui-monospace,monospace;
+  font-size:11px;
+  max-height:130px;
+  overflow:hidden;
+  margin-top:8px;
+  color:#b9c7d5
+}
+
+button{
+  background:#1b2a38;
+  color:white;
+  border:1px solid #40566c;
+  border-radius:7px;
+  padding:6px 9px;
+  margin:7px 4px 0 0
+}
+
+#hudBody.collapsed{
+  display:none
+}
+
+@media (max-width:600px){
+  #hud{
+    left:10px;
+    right:10px;
+    top:auto;
+    bottom:10px;
+    max-width:none;
+    padding:10px 12px
+  }
+
+  #hudHeader h1{
+    font-size:16px
+  }
+
+  #events{
+    max-height:72px;
+    font-size:10px
+  }
+
+  .row{
+    font-size:12px
+  }
+
+  button{
+    padding:5px 8px
+  }
+}
 </style>
 </head>
+
 <body>
+
 <canvas id="c"></canvas>
+
 <div id="hud">
-<h1>FruitSim v0.1.0 — Test Chamber</h1>
-<div class="muted">Browser-only • no Python • no Replit</div>
-<div class="row" id="status"></div>
-<div class="row" id="brain"></div>
-<button id="reset">Reset</button><button id="pause">Pause</button>
-<div id="events"></div>
+
+<div id="hudHeader">
+  <h1>FruitSim v0.1.2 — Feeding Test</h1>
+  <button id="collapse">−</button>
 </div>
+
+<div id="hudBody">
+
+  <div class="muted">
+    Browser-only • feeding behavior • mobile friendly
+  </div>
+
+  <div class="row" id="status"></div>
+  <div class="row" id="brain"></div>
+  <div class="row" id="behavior"></div>
+
+  <button id="reset">Reset</button>
+  <button id="pause">Pause</button>
+
+  <div id="events"></div>
+
+</div>
+</div>
+
 <script>
-const DATA = {"version":"0.1.0","dataset":"male-cns:v1.0","note":"Small real-connectome-derived circuit. Browser dynamics and sensor/motor mappings are experimental.","threshold":0.25,"decay":0.22,"neurons":[{"id":12781,"label":"DNge104_R","nt":"gaba","sign":-1},{"id":522822,"label":"AN17A076_L","nt":"acetylcholine","sign":1},{"id":513052,"label":"DNg15_R","nt":"acetylcholine","sign":1},{"id":22728,"label":"AN17A004_L","nt":"acetylcholine","sign":1},{"id":800632,"label":"IN09B014_R","nt":"acetylcholine","sign":1},{"id":15148,"label":"DNg62_R","nt":"acetylcholine","sign":1},{"id":12169,"label":"DNg87_L","nt":"acetylcholine","sign":1},{"id":513405,"label":"AN05B040_L","nt":"gaba","sign":-1},{"id":18278,"label":"AN05B029_L","nt":"gaba","sign":-1},{"id":800373,"label":"IN23B001_L","nt":"acetylcholine","sign":1},{"id":800206,"label":"IN23B001_R","nt":"acetylcholine","sign":1},{"id":800002,"label":"IN07B010_L","nt":"acetylcholine","sign":1},{"id":35505,"label":"AN07B024_L","nt":"acetylcholine","sign":1},{"id":23826,"label":"AN05B005_L","nt":"gaba","sign":-1},{"id":12590,"label":"DNg22_L","nt":"acetylcholine","sign":1},{"id":11006,"label":"DNge129_L","nt":"gaba","sign":-1},{"id":800485,"label":"IN06B003_L","nt":"gaba","sign":-1},{"id":933729,"label":"IN17A023_L","nt":"acetylcholine","sign":1},{"id":27702,"label":"ANXXX013_L","nt":"gaba","sign":-1},{"id":800268,"label":"IN01B001_L","nt":"gaba","sign":-1},{"id":15653,"label":"DNge012_L","nt":"acetylcholine","sign":1},{"id":14098,"label":"DNge044_L","nt":"acetylcholine","sign":1},{"id":11352,"label":"DNge027_L","nt":"acetylcholine","sign":1},{"id":524363,"label":"GNG031_L","nt":"gaba","sign":-1},{"id":934591,"label":"IN07B009_R","nt":"glutamate","sign":0},{"id":801598,"label":"IN03B019_L","nt":"gaba","sign":-1},{"id":801214,"label":"LBL40_R","nt":"acetylcholine","sign":1},{"id":801404,"label":"IN11B002_R","nt":"gaba","sign":-1},{"id":802274,"label":"IN09A011_R","nt":"gaba","sign":-1},{"id":803745,"label":"IN13B104_L","nt":"gaba","sign":-1},{"id":906654,"label":"INXXX133_R","nt":"acetylcholine","sign":1},{"id":801500,"label":"IN06B020_L","nt":"gaba","sign":-1},{"id":904119,"label":"IN06B088_R","nt":"gaba","sign":-1},{"id":801113,"label":"IN07B013_R","nt":"glutamate","sign":0}],"edges":[[12781,522822,288],[12781,513052,150],[12781,22728,66],[12781,800632,61],[522822,15148,276],[522822,12169,158],[522822,513405,150],[522822,18278,147],[513052,800373,289],[513052,800206,188],[513052,800002,151],[513052,35505,97],[22728,23826,141],[22728,12590,116],[22728,11006,106],[22728,800485,104],[800632,800002,107],[800632,933729,103],[800632,27702,91],[800632,800268,88],[15148,15653,206],[15148,14098,202],[15148,11352,187],[15148,524363,185],[800373,934591,73],[800373,801598,67],[800373,801214,65],[800373,801404,64],[23826,802274,90],[23826,803745,82],[23826,513052,76],[23826,906654,75],[800002,801500,92],[800002,904119,76],[800002,801113,73],[800002,801214,70]]};
+
+const DATA = {
+  threshold:0.25,
+  decay:0.22,
+
+  neurons:[
+    {id:12781,label:"DNge104_R",nt:"gaba",sign:-1},
+    {id:522822,label:"AN17A076_L",nt:"acetylcholine",sign:1},
+    {id:513052,label:"DNg15_R",nt:"acetylcholine",sign:1},
+    {id:22728,label:"AN17A004_L",nt:"acetylcholine",sign:1},
+    {id:800632,label:"IN09B014_R",nt:"acetylcholine",sign:1},
+
+    {id:15148,label:"DNg62_R",nt:"acetylcholine",sign:1},
+    {id:12169,label:"DNg87_L",nt:"acetylcholine",sign:1},
+    {id:513405,label:"AN05B040_L",nt:"gaba",sign:-1},
+    {id:18278,label:"AN05B029_L",nt:"gaba",sign:-1},
+
+    {id:800373,label:"IN23B001_L",nt:"acetylcholine",sign:1},
+    {id:800206,label:"IN23B001_R",nt:"acetylcholine",sign:1},
+    {id:800002,label:"IN07B010_L",nt:"acetylcholine",sign:1},
+    {id:35505,label:"AN07B024_L",nt:"acetylcholine",sign:1},
+
+    {id:23826,label:"AN05B005_L",nt:"gaba",sign:-1},
+    {id:12590,label:"DNg22_L",nt:"acetylcholine",sign:1},
+    {id:11006,label:"DNge129_L",nt:"gaba",sign:-1},
+    {id:800485,label:"IN06B003_L",nt:"gaba",sign:-1},
+
+    {id:933729,label:"IN17A023_L",nt:"acetylcholine",sign:1},
+    {id:27702,label:"ANXXX013_L",nt:"gaba",sign:-1},
+    {id:800268,label:"IN01B001_L",nt:"gaba",sign:-1},
+
+    {id:15653,label:"DNge012_L",nt:"acetylcholine",sign:1},
+    {id:14098,label:"DNge044_L",nt:"acetylcholine",sign:1},
+    {id:11352,label:"DNge027_L",nt:"acetylcholine",sign:1},
+    {id:524363,label:"GNG031_L",nt:"gaba",sign:-1},
+
+    {id:934591,label:"IN07B009_R",nt:"glutamate",sign:0},
+    {id:801598,label:"IN03B019_L",nt:"gaba",sign:-1},
+    {id:801214,label:"LBL40_R",nt:"acetylcholine",sign:1},
+    {id:801404,label:"IN11B002_R",nt:"gaba",sign:-1},
+
+    {id:802274,label:"IN09A011_R",nt:"gaba",sign:-1},
+    {id:803745,label:"IN13B104_L",nt:"gaba",sign:-1},
+    {id:906654,label:"INXXX133_R",nt:"acetylcholine",sign:1},
+
+    {id:801500,label:"IN06B020_L",nt:"gaba",sign:-1},
+    {id:904119,label:"IN06B088_R",nt:"gaba",sign:-1},
+    {id:801113,label:"IN07B013_R",nt:"glutamate",sign:0}
+  ],
+
+  edges:[
+    [12781,522822,288],
+    [12781,513052,150],
+    [12781,22728,66],
+    [12781,800632,61],
+
+    [522822,15148,276],
+    [522822,12169,158],
+    [522822,513405,150],
+    [522822,18278,147],
+
+    [513052,800373,289],
+    [513052,800206,188],
+    [513052,800002,151],
+    [513052,35505,97],
+
+    [22728,23826,141],
+    [22728,12590,116],
+    [22728,11006,106],
+    [22728,800485,104],
+
+    [800632,800002,107],
+    [800632,933729,103],
+    [800632,27702,91],
+    [800632,800268,88],
+
+    [15148,15653,206],
+    [15148,14098,202],
+    [15148,11352,187],
+    [15148,524363,185],
+
+    [800373,934591,73],
+    [800373,801598,67],
+    [800373,801214,65],
+    [800373,801404,64],
+
+    [23826,802274,90],
+    [23826,803745,82],
+    [23826,513052,76],
+    [23826,906654,75],
+
+    [800002,801500,92],
+    [800002,904119,76],
+    [800002,801113,73],
+    [800002,801214,70]
+  ]
+};
+
 
 class Brain {
+
   constructor(data){
-    this.data=data; this.threshold=data.threshold; this.decay=data.decay;
-    this.nodes=new Map(data.neurons.map(n=>[n.id,n]));
-    this.signal=new Map(data.neurons.map(n=>[n.id,0]));
+
+    this.data=data;
+    this.threshold=data.threshold;
+    this.decay=data.decay;
+
+    this.nodes=new Map(
+      data.neurons.map(n=>[n.id,n])
+    );
+
+    this.signal=new Map(
+      data.neurons.map(n=>[n.id,0])
+    );
+
     this.out=new Map();
+
     const max=new Map();
-    for(const [a,b,w] of data.edges) max.set(a,Math.max(max.get(a)||0,w));
+
+    for(const [a,b,w] of data.edges)
+      max.set(a,Math.max(max.get(a)||0,w));
+
     for(const [a,b,w] of data.edges){
-      if(!this.out.has(a)) this.out.set(a,[]);
-      this.out.get(a).push([b,w/(max.get(a)||1),w]);
+
+      if(!this.out.has(a))
+        this.out.set(a,[]);
+
+      this.out.get(a).push([
+        b,
+        w/(max.get(a)||1),
+        w
+      ]);
     }
+
     this.events=[];
   }
-  stimulate(id,x){ this.signal.set(id,(this.signal.get(id)||0)+x); }
+
+
+  stimulate(id,x){
+
+    this.signal.set(
+      id,
+      (this.signal.get(id)||0)+x
+    );
+
+  }
+
+
   step(){
-    const next=new Map([...this.signal].map(([id,s])=>[id,s*this.decay]));
+
+    const next=new Map(
+      [...this.signal].map(
+        ([id,s])=>[id,s*this.decay]
+      )
+    );
+
     const events=[];
+
     for(const [id,s] of this.signal){
+
       if(s>=this.threshold){
-        const n=this.nodes.get(id); events.push({id,label:n.label,s,kind:"fire"});
-        if(n.sign!==0) for(const [post,nw] of (this.out.get(id)||[]))
-          next.set(post,(next.get(post)||0)+s*nw*n.sign);
-      } else if(s<=-this.threshold){
-        const n=this.nodes.get(id); events.push({id,label:n.label,s,kind:"inhibited"});
+
+        const n=this.nodes.get(id);
+
+        events.push({
+          id,
+          label:n.label,
+          s,
+          kind:"fire"
+        });
+
+        if(n.sign!==0){
+
+          for(const [post,nw] of (this.out.get(id)||[])){
+
+            next.set(
+              post,
+              (next.get(post)||0)
+              +s*nw*n.sign
+            );
+
+          }
+
+        }
+
       }
+
+      else if(s<=-this.threshold){
+
+        const n=this.nodes.get(id);
+
+        events.push({
+          id,
+          label:n.label,
+          s,
+          kind:"inhibited"
+        });
+
+      }
+
     }
-    this.signal=next; this.events=events; return events;
+
+    this.signal=next;
+    this.events=events;
+
+    return events;
   }
 }
 
-const canvas=document.getElementById("c"), ctx=canvas.getContext("2d");
-let W,H,dpr=1,paused=false;
-function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
-addEventListener("resize",resize);resize();
+
+const canvas=document.getElementById("c");
+const ctx=canvas.getContext("2d");
+
+let W,H,dpr=1;
+let paused=false;
+
+
+function resize(){
+
+  dpr=Math.min(devicePixelRatio||1,2);
+
+  W=innerWidth;
+  H=innerHeight;
+
+  canvas.width=W*dpr;
+  canvas.height=H*dpr;
+
+  ctx.setTransform(
+    dpr,0,0,dpr,0,0
+  );
+
+}
+
+addEventListener("resize",resize);
+resize();
+
 
 const brain=new Brain(DATA);
-let fly,food,last=performance.now(),neuralClock=0;
-function reset(){
-  fly={x:W*.5,y:H*.58,a:-Math.PI/2,v:0};
-  food={x:W*.72,y:H*.32};
-  for(const id of brain.signal.keys()) brain.signal.set(id,0);
+
+let fly;
+let food;
+
+let last=performance.now();
+let neuralClock=0;
+
+let behaviorState="SEARCHING";
+
+let feedTimer=0;
+
+let energy=0;
+
+let meals=0;
+
+
+function spawnFood(){
+
+  const margin=70;
+
+  food={
+
+    x:
+      margin+
+      Math.random()*
+      Math.max(60,W-margin*2),
+
+    y:
+      margin+
+      Math.random()*
+      Math.max(60,H-margin*2)
+
+  };
+
 }
+
+
+function reset(){
+
+  fly={
+    x:W*.5,
+    y:H*.58,
+    a:-Math.PI/2,
+    v:0
+  };
+
+  spawnFood();
+
+  behaviorState="SEARCHING";
+
+  feedTimer=0;
+
+  energy=0;
+
+  meals=0;
+
+  for(const id of brain.signal.keys())
+    brain.signal.set(id,0);
+
+}
+
 reset();
 
-function sensorAndBrain(dt){
-  const dx=food.x-fly.x,dy=food.y-fly.y;
-  const desired=Math.atan2(dy,dx);
-  let diff=Math.atan2(Math.sin(desired-fly.a),Math.cos(desired-fly.a));
-  const dist=Math.hypot(dx,dy);
-  const proximity=Math.max(0,1-dist/500);
 
-  // EXPERIMENTAL SENSOR MAPPING:
-  // environment values stimulate existing nodes in our extracted real circuit.
-  // This mapping itself is NOT claimed to be biological.
-  if(diff<-.08) brain.stimulate(522822,0.32+proximity*.22);
-  if(diff>.08) brain.stimulate(513052,0.32+proximity*.22);
-  if(Math.abs(diff)<.65) brain.stimulate(22728,0.28+proximity*.30);
+function sensorAndBrain(dt){
+
+  const dx=food.x-fly.x;
+  const dy=food.y-fly.y;
+
+  const desired=Math.atan2(dy,dx);
+
+  let diff=Math.atan2(
+    Math.sin(desired-fly.a),
+    Math.cos(desired-fly.a)
+  );
+
+  const dist=Math.hypot(dx,dy);
+
+  const proximity=
+    Math.max(0,1-dist/500);
+
+
+  /*
+    FEEDING STATE
+
+    This is currently an experimental
+    behavior layer.
+
+    It is NOT yet mapped to a verified
+    biological Drosophila feeding circuit.
+  */
+
+  if(behaviorState==="FEEDING"){
+
+    fly.v=0;
+
+    feedTimer-=dt;
+
+    if(feedTimer<=0){
+
+      energy=
+        Math.min(100,energy+25);
+
+      meals+=1;
+
+      spawnFood();
+
+      behaviorState="SEARCHING";
+
+    }
+
+    return;
+
+  }
+
+
+  /*
+    Fly has reached the food.
+  */
+
+  if(dist<24){
+
+    behaviorState="FEEDING";
+
+    feedTimer=2.0;
+
+    fly.v=0;
+
+    return;
+
+  }
+
+
+  if(dist<160)
+    behaviorState="APPROACHING";
+
+  else
+    behaviorState="SEARCHING";
+
+
+  /*
+    EXPERIMENTAL SENSOR MAPPING
+
+    These environment values stimulate
+    nodes from our real-connectome-derived
+    circuit.
+
+    The mapping itself is experimental.
+  */
+
+  if(diff<-.08)
+
+    brain.stimulate(
+      522822,
+      0.32+proximity*.22
+    );
+
+
+  if(diff>.08)
+
+    brain.stimulate(
+      513052,
+      0.32+proximity*.22
+    );
+
+
+  if(Math.abs(diff)<.65)
+
+    brain.stimulate(
+      22728,
+      0.28+proximity*.30
+    );
+
 
   neuralClock+=dt;
+
+
   if(neuralClock>0.11){
-    neuralClock=0; brain.step();
 
-    // EXPERIMENTAL MOTOR READOUT from selected real nodes.
-    const L=Math.max(0,brain.signal.get(15653)||0)+Math.max(0,brain.signal.get(14098)||0);
-    const R=Math.max(0,brain.signal.get(800373)||0)+Math.max(0,brain.signal.get(800206)||0);
-    const F=Math.max(0,brain.signal.get(12590)||0)+Math.max(0,brain.signal.get(11352)||0);
+    neuralClock=0;
 
-    fly.a += (R-L)*0.055;
-    fly.v = 25 + Math.min(75,F*35+proximity*15);
+    brain.step();
+
+
+    /*
+      EXPERIMENTAL MOTOR READOUT
+    */
+
+    const L=
+
+      Math.max(
+        0,
+        brain.signal.get(15653)||0
+      )
+
+      +
+
+      Math.max(
+        0,
+        brain.signal.get(14098)||0
+      );
+
+
+    const R=
+
+      Math.max(
+        0,
+        brain.signal.get(800373)||0
+      )
+
+      +
+
+      Math.max(
+        0,
+        brain.signal.get(800206)||0
+      );
+
+
+    const F=
+
+      Math.max(
+        0,
+        brain.signal.get(12590)||0
+      )
+
+      +
+
+      Math.max(
+        0,
+        brain.signal.get(11352)||0
+      );
+
+
+    /*
+      Small steering assist.
+
+      This prevents the current tiny
+      network from orbiting the food
+      forever.
+    */
+
+    fly.a +=
+
+      (R-L)*0.055
+
+      +
+
+      Math.max(
+        -0.045,
+        Math.min(
+          0.045,
+          diff*0.018
+        )
+      );
+
+
+    fly.v=
+
+      25+
+
+      Math.min(
+        75,
+        F*35+
+        proximity*15
+      );
+
   }
+
 }
+
 
 function draw(){
-  ctx.clearRect(0,0,W,H);
-  const grad=ctx.createLinearGradient(0,0,0,H);grad.addColorStop(0,"#111a24");grad.addColorStop(1,"#070a0e");ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
 
-  // chamber grid
-  ctx.strokeStyle="#1a2935";ctx.lineWidth=1;
+  ctx.clearRect(
+    0,0,W,H
+  );
+
+
+  const grad=
+    ctx.createLinearGradient(
+      0,0,0,H
+    );
+
+  grad.addColorStop(
+    0,
+    "#111a24"
+  );
+
+  grad.addColorStop(
+    1,
+    "#070a0e"
+  );
+
+  ctx.fillStyle=grad;
+
+  ctx.fillRect(
+    0,0,W,H
+  );
+
+
+  /*
+    TEST CHAMBER GRID
+  */
+
+  ctx.strokeStyle="#1a2935";
+
+  ctx.lineWidth=1;
+
   const step=48;
-  for(let x=(W%step)/2;x<W;x+=step){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
-  for(let y=(H%step)/2;y<H;y+=step){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
 
-  // food
-  ctx.beginPath();ctx.arc(food.x,food.y,12,0,Math.PI*2);ctx.fillStyle="#e7c55d";ctx.fill();
-  ctx.fillStyle="#d9e3ed";ctx.font="12px system-ui";ctx.fillText("FOOD",food.x+17,food.y+4);
 
-  // fly
-  ctx.save();ctx.translate(fly.x,fly.y);ctx.rotate(fly.a);
-  ctx.globalAlpha=.55;ctx.fillStyle="#b8d4e6";
-  ctx.beginPath();ctx.ellipse(-4,-9,12,5,-.5,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(-4,9,12,5,.5,0,Math.PI*2);ctx.fill();
-  ctx.globalAlpha=1;ctx.fillStyle="#8b6339";ctx.beginPath();ctx.ellipse(0,0,13,7,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#b8483d";ctx.beginPath();ctx.arc(10,-4,3,0,Math.PI*2);ctx.arc(10,4,3,0,Math.PI*2);ctx.fill();
+  for(
+    let x=(W%step)/2;
+    x<W;
+    x+=step
+  ){
+
+    ctx.beginPath();
+
+    ctx.moveTo(x,0);
+
+    ctx.lineTo(x,H);
+
+    ctx.stroke();
+
+  }
+
+
+  for(
+    let y=(H%step)/2;
+    y<H;
+    y+=step
+  ){
+
+    ctx.beginPath();
+
+    ctx.moveTo(0,y);
+
+    ctx.lineTo(W,y);
+
+    ctx.stroke();
+
+  }
+
+
+  /*
+    FOOD
+  */
+
+  ctx.beginPath();
+
+  ctx.arc(
+    food.x,
+    food.y,
+    12,
+    0,
+    Math.PI*2
+  );
+
+  ctx.fillStyle="#e7c55d";
+
+  ctx.fill();
+
+
+  ctx.fillStyle="#d9e3ed";
+
+  ctx.font="12px system-ui";
+
+  ctx.fillText(
+    "FOOD",
+    food.x+17,
+    food.y+4
+  );
+
+
+  /*
+    Feeding animation
+  */
+
+  if(behaviorState==="FEEDING"){
+
+    ctx.beginPath();
+
+    ctx.arc(
+      fly.x,
+      fly.y,
+      26+
+      Math.sin(
+        performance.now()/100
+      )*3,
+      0,
+      Math.PI*2
+    );
+
+    ctx.strokeStyle="#e7c55d";
+
+    ctx.lineWidth=2;
+
+    ctx.stroke();
+
+  }
+
+
+  /*
+    FLY
+  */
+
+  ctx.save();
+
+  ctx.translate(
+    fly.x,
+    fly.y
+  );
+
+  ctx.rotate(
+    fly.a
+  );
+
+
+  /*
+    Wings
+  */
+
+  ctx.globalAlpha=.55;
+
+  ctx.fillStyle="#b8d4e6";
+
+
+  ctx.beginPath();
+
+  ctx.ellipse(
+    -4,-9,
+    12,5,
+    -.5,
+    0,
+    Math.PI*2
+  );
+
+  ctx.fill();
+
+
+  ctx.beginPath();
+
+  ctx.ellipse(
+    -4,9,
+    12,5,
+    .5,
+    0,
+    Math.PI*2
+  );
+
+  ctx.fill();
+
+
+  /*
+    Body
+  */
+
+  ctx.globalAlpha=1;
+
+  ctx.fillStyle="#8b6339";
+
+  ctx.beginPath();
+
+  ctx.ellipse(
+    0,0,
+    13,7,
+    0,
+    0,
+    Math.PI*2
+  );
+
+  ctx.fill();
+
+
+  /*
+    Eyes
+  */
+
+  ctx.fillStyle="#b8483d";
+
+  ctx.beginPath();
+
+  ctx.arc(
+    10,-4,
+    3,
+    0,
+    Math.PI*2
+  );
+
+  ctx.arc(
+    10,4,
+    3,
+    0,
+    Math.PI*2
+  );
+
+  ctx.fill();
+
+
   ctx.restore();
+
 }
+
 
 function frame(t){
-  const dt=Math.min(.05,(t-last)/1000);last=t;
+
+  const dt=
+    Math.min(
+      .05,
+      (t-last)/1000
+    );
+
+  last=t;
+
+
   if(!paused){
+
+    /*
+      Energy slowly decreases.
+    */
+
+    energy=
+      Math.max(
+        0,
+        energy-dt*.35
+      );
+
+
     sensorAndBrain(dt);
-    fly.x+=Math.cos(fly.a)*fly.v*dt;fly.y+=Math.sin(fly.a)*fly.v*dt;
-    if(fly.x<10||fly.x>W-10){fly.a=Math.PI-fly.a;fly.x=Math.max(10,Math.min(W-10,fly.x))}
-    if(fly.y<10||fly.y>H-10){fly.a=-fly.a;fly.y=Math.max(10,Math.min(H-10,fly.y))}
+
+
+    fly.x +=
+      Math.cos(fly.a)*
+      fly.v*
+      dt;
+
+
+    fly.y +=
+      Math.sin(fly.a)*
+      fly.v*
+      dt;
+
+
+    /*
+      Chamber walls
+    */
+
+    if(
+      fly.x<10 ||
+      fly.x>W-10
+    ){
+
+      fly.a=
+        Math.PI-fly.a;
+
+      fly.x=
+        Math.max(
+          10,
+          Math.min(
+            W-10,
+            fly.x
+          )
+        );
+
+    }
+
+
+    if(
+      fly.y<10 ||
+      fly.y>H-10
+    ){
+
+      fly.a=
+        -fly.a;
+
+      fly.y=
+        Math.max(
+          10,
+          Math.min(
+            H-10,
+            fly.y
+          )
+        );
+
+    }
+
   }
+
+
   draw();
-  const d=Math.hypot(food.x-fly.x,food.y-fly.y);
-  document.getElementById("status").textContent=`Fly → food distance: ${d.toFixed(0)} px`;
-  document.getElementById("brain").textContent=`${DATA.neurons.length} neurons • ${DATA.edges.length} real extracted edges • ${brain.events.length} events`;
-  document.getElementById("events").innerHTML=brain.events.slice(0,7).map(e=>`${e.kind==="fire"?"FIRE":"BLOCK"} ${e.id} ${e.label} ${e.s.toFixed(2)}`).join("<br>") || "(brain quiet)";
-  requestAnimationFrame(frame);
+
+
+  const d=
+    Math.hypot(
+      food.x-fly.x,
+      food.y-fly.y
+    );
+
+
+  document.getElementById(
+    "status"
+  ).textContent=
+
+    `Fly → food distance: ${d.toFixed(0)} px`;
+
+
+  document.getElementById(
+    "brain"
+  ).textContent=
+
+    `${DATA.neurons.length} neurons • ${DATA.edges.length} real extracted edges • ${brain.events.length} events`;
+
+
+  const feedText=
+
+    behaviorState==="FEEDING"
+
+    ?
+
+    ` • ${feedTimer.toFixed(1)}s`
+
+    :
+
+    "";
+
+
+  document.getElementById(
+    "behavior"
+  ).textContent=
+
+    `State: ${behaviorState}${feedText} • Energy: ${energy.toFixed(0)}% • Meals: ${meals}`;
+
+
+  document.getElementById(
+    "events"
+  ).innerHTML=
+
+    brain.events
+    .slice(0,7)
+    .map(
+      e=>
+      `${e.kind==="fire"?"FIRE":"BLOCK"} ${e.id} ${e.label} ${e.s.toFixed(2)}`
+    )
+    .join("<br>")
+
+    ||
+
+    "(brain quiet)";
+
+
+  requestAnimationFrame(
+    frame
+  );
+
 }
-document.getElementById("reset").onclick=reset;
-document.getElementById("pause").onclick=e=>{paused=!paused;e.target.textContent=paused?"Resume":"Pause"};
-canvas.onclick=e=>{food.x=e.clientX;food.y=e.clientY};
-requestAnimationFrame(frame);
+
+
+document.getElementById(
+  "reset"
+).onclick=reset;
+
+
+document.getElementById(
+  "pause"
+).onclick=e=>{
+
+  paused=!paused;
+
+  e.target.textContent=
+    paused
+    ?
+    "Resume"
+    :
+    "Pause";
+
+};
+
+
+const collapseBtn=
+  document.getElementById(
+    "collapse"
+  );
+
+
+const hudBody=
+  document.getElementById(
+    "hudBody"
+  );
+
+
+collapseBtn.onclick=()=>{
+
+  const collapsed=
+    hudBody.classList.toggle(
+      "collapsed"
+    );
+
+  collapseBtn.textContent=
+    collapsed
+    ?
+    "+"
+    :
+    "−";
+
+};
+
+
+/*
+  Tap anywhere to move the food.
+*/
+
+canvas.onclick=e=>{
+
+  if(
+    behaviorState!=="FEEDING"
+  ){
+
+    food.x=e.clientX;
+
+    food.y=e.clientY;
+
+    behaviorState=
+      "SEARCHING";
+
+  }
+
+};
+
+
+requestAnimationFrame(
+  frame
+);
+
 </script>
+
 </body>
 </html>
