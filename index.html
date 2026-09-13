@@ -7,37 +7,21 @@
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#090d12;color:#e8f0f7;font-family:system-ui,sans-serif}
 #c{width:100%;height:100%;display:block}
-#hud{position:fixed;left:14px;top:14px;background:#101720dd;border:1px solid #2c3b4c;border-radius:12px;padding:12px 14px;max-width:340px;box-shadow:0 8px 30px #0008;z-index:5}
-#hudHeader{display:flex;align-items:center;justify-content:space-between;gap:10px}
-#hudHeader h1{font-size:18px;margin:0}
-#collapse{margin:0;padding:4px 8px;font-size:14px;min-width:34px}
-.muted{color:#91a3b6;font-size:12px;margin-top:5px}.row{margin-top:7px;font-size:13px}
+#hud{position:fixed;left:14px;top:14px;background:#101720dd;border:1px solid #2c3b4c;border-radius:12px;padding:12px 14px;max-width:340px;box-shadow:0 8px 30px #0008}
+h1{font-size:18px;margin:0 0 5px}.muted{color:#91a3b6;font-size:12px}.row{margin-top:7px;font-size:13px}
 #events{font-family:ui-monospace,monospace;font-size:11px;max-height:130px;overflow:hidden;margin-top:8px;color:#b9c7d5}
 button{background:#1b2a38;color:white;border:1px solid #40566c;border-radius:7px;padding:6px 9px;margin:7px 4px 0 0}
-#hudBody.collapsed{display:none}
-@media (max-width:600px){
-  #hud{left:10px;right:10px;top:auto;bottom:10px;max-width:none;padding:10px 12px}
-  #hudHeader h1{font-size:16px}
-  #events{max-height:72px;font-size:10px}
-  .row{font-size:12px}
-  button{padding:5px 8px}
-}
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
 <div id="hud">
-<div id="hudHeader">
-  <h1>FruitSim v0.1.1 — Test Chamber</h1>
-  <button id="collapse" aria-label="Collapse menu">−</button>
-</div>
-<div id="hudBody">
-  <div class="muted">Browser-only • mobile HUD fix</div>
-  <div class="row" id="status"></div>
-  <div class="row" id="brain"></div>
-  <button id="reset">Reset</button><button id="pause">Pause</button>
-  <div id="events"></div>
-</div>
+<h1>FruitSim v0.1.0 — Test Chamber</h1>
+<div class="muted">Browser-only • no Python • no Replit</div>
+<div class="row" id="status"></div>
+<div class="row" id="brain"></div>
+<button id="reset">Reset</button><button id="pause">Pause</button>
+<div id="events"></div>
 </div>
 <script>
 const DATA = {"version":"0.1.0","dataset":"male-cns:v1.0","note":"Small real-connectome-derived circuit. Browser dynamics and sensor/motor mappings are experimental.","threshold":0.25,"decay":0.22,"neurons":[{"id":12781,"label":"DNge104_R","nt":"gaba","sign":-1},{"id":522822,"label":"AN17A076_L","nt":"acetylcholine","sign":1},{"id":513052,"label":"DNg15_R","nt":"acetylcholine","sign":1},{"id":22728,"label":"AN17A004_L","nt":"acetylcholine","sign":1},{"id":800632,"label":"IN09B014_R","nt":"acetylcholine","sign":1},{"id":15148,"label":"DNg62_R","nt":"acetylcholine","sign":1},{"id":12169,"label":"DNg87_L","nt":"acetylcholine","sign":1},{"id":513405,"label":"AN05B040_L","nt":"gaba","sign":-1},{"id":18278,"label":"AN05B029_L","nt":"gaba","sign":-1},{"id":800373,"label":"IN23B001_L","nt":"acetylcholine","sign":1},{"id":800206,"label":"IN23B001_R","nt":"acetylcholine","sign":1},{"id":800002,"label":"IN07B010_L","nt":"acetylcholine","sign":1},{"id":35505,"label":"AN07B024_L","nt":"acetylcholine","sign":1},{"id":23826,"label":"AN05B005_L","nt":"gaba","sign":-1},{"id":12590,"label":"DNg22_L","nt":"acetylcholine","sign":1},{"id":11006,"label":"DNge129_L","nt":"gaba","sign":-1},{"id":800485,"label":"IN06B003_L","nt":"gaba","sign":-1},{"id":933729,"label":"IN17A023_L","nt":"acetylcholine","sign":1},{"id":27702,"label":"ANXXX013_L","nt":"gaba","sign":-1},{"id":800268,"label":"IN01B001_L","nt":"gaba","sign":-1},{"id":15653,"label":"DNge012_L","nt":"acetylcholine","sign":1},{"id":14098,"label":"DNge044_L","nt":"acetylcholine","sign":1},{"id":11352,"label":"DNge027_L","nt":"acetylcholine","sign":1},{"id":524363,"label":"GNG031_L","nt":"gaba","sign":-1},{"id":934591,"label":"IN07B009_R","nt":"glutamate","sign":0},{"id":801598,"label":"IN03B019_L","nt":"gaba","sign":-1},{"id":801214,"label":"LBL40_R","nt":"acetylcholine","sign":1},{"id":801404,"label":"IN11B002_R","nt":"gaba","sign":-1},{"id":802274,"label":"IN09A011_R","nt":"gaba","sign":-1},{"id":803745,"label":"IN13B104_L","nt":"gaba","sign":-1},{"id":906654,"label":"INXXX133_R","nt":"acetylcholine","sign":1},{"id":801500,"label":"IN06B020_L","nt":"gaba","sign":-1},{"id":904119,"label":"IN06B088_R","nt":"gaba","sign":-1},{"id":801113,"label":"IN07B013_R","nt":"glutamate","sign":0}],"edges":[[12781,522822,288],[12781,513052,150],[12781,22728,66],[12781,800632,61],[522822,15148,276],[522822,12169,158],[522822,513405,150],[522822,18278,147],[513052,800373,289],[513052,800206,188],[513052,800002,151],[513052,35505,97],[22728,23826,141],[22728,12590,116],[22728,11006,106],[22728,800485,104],[800632,800002,107],[800632,933729,103],[800632,27702,91],[800632,800268,88],[15148,15653,206],[15148,14098,202],[15148,11352,187],[15148,524363,185],[800373,934591,73],[800373,801598,67],[800373,801214,65],[800373,801404,64],[23826,802274,90],[23826,803745,82],[23826,513052,76],[23826,906654,75],[800002,801500,92],[800002,904119,76],[800002,801113,73],[800002,801214,70]]};
@@ -156,14 +140,6 @@ function frame(t){
 }
 document.getElementById("reset").onclick=reset;
 document.getElementById("pause").onclick=e=>{paused=!paused;e.target.textContent=paused?"Resume":"Pause"};
-
-const collapseBtn=document.getElementById("collapse");
-const hudBody=document.getElementById("hudBody");
-collapseBtn.onclick=()=>{
-  const collapsed=hudBody.classList.toggle("collapsed");
-  collapseBtn.textContent=collapsed?"+":"−";
-};
-
 canvas.onclick=e=>{food.x=e.clientX;food.y=e.clientY};
 requestAnimationFrame(frame);
 </script>
